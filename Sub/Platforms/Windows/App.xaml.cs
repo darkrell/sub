@@ -1,4 +1,5 @@
-﻿using Microsoft.UI;
+﻿using Microsoft.Maui.LifecycleEvents;
+using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Windows.Graphics;
@@ -29,6 +30,10 @@ public partial class App : MauiWinUIApplication
             IntPtr windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(nativeWindow);
             WindowId windowId = Win32Interop.GetWindowIdFromWindow(windowHandle);
             AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
+            var presenter = appWindow.Presenter as OverlappedPresenter;
+
+            appWindow.SetPresenter(AppWindowPresenterKind.CompactOverlay);
+            presenter.IsAlwaysOnTop = true;
             appWindow.Resize(new SizeInt32(WindowWidth, WindowHeight));
         });
     }
