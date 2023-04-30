@@ -1,0 +1,35 @@
+﻿@page "/configuration"
+@inject ITokenContainer _container
+@inject ISnackbar _snackbar
+@inject NavigationManager _navigation
+
+<MudPaper Class="pa-1">
+    <h1>Configuration</h1>
+    The app requires a Deepgram API key. <br />
+    <ol>
+        <li>Open <a href="https://deepgram.com/">deepgram.com</a></li>
+        <li>Register</li>
+        <li>Open the API Keys page.</li>
+        <li>Create a new token and copy it</li>
+        <li>Insert the key in the bottom box</li>
+    </ol>
+    <MudTextField Label="Api key" @bind-Value="_token" Variant="Variant.Text" />
+    <MudButton OnClick="ValidateAndSave" Variant="Variant.Text" Color="Color.Primary">Validate and save</MudButton>
+</MudPaper>
+@code {
+    private string _token;
+    protected override async Task OnInitializedAsync()
+    {
+        _token = await _container.GetToken();
+    }
+    private async Task ValidateAndSave()
+    {
+        if (await _container.SetToken(_token))
+        {
+            _snackbar.Add("Success", Severity.Success, x => x.VisibleStateDuration = 1000);
+            _navigation.NavigateTo("/", false);
+        }
+        else
+            _snackbar.Add("Failed", Severity.Error, x => x.VisibleStateDuration = 1000);
+    }
+}
