@@ -1,7 +1,5 @@
-﻿using Microsoft.Maui.LifecycleEvents;
-using Microsoft.UI;
+﻿using Microsoft.UI;
 using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
 using Windows.Graphics;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -13,7 +11,7 @@ namespace Sub.WinUI;
 /// </summary>
 public partial class App : MauiWinUIApplication
 {
-    const int WindowWidth = 512;
+    const int WindowWidth = 648;
     const int WindowHeight = 1366;
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code
