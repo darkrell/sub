@@ -1,13 +1,53 @@
 ﻿@inherits LayoutComponentBase
-<MudThemeProvider IsDarkMode/>
-<MudDialogProvider/>
-<MudSnackbarProvider/>
+@inject AudioService _audioService
+@inject ITokenContainer _container
+@implements IDisposable
+
+<MudThemeProvider IsDarkMode />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar>
-        SUB
+    <MudAppBar Dense>
+        <a href="/">
+            SUB
+        </a>
+        <MudSpacer />
+        <MudToggleIconButton @bind-Toggled="@_isRecord" @bind-Toggled:after="RecordToggled" Disabled="isTokenNull"
+                             Icon="@Icons.Material.Filled.FiberManualRecord" Color="@Color.Error" Title="Off"
+                             ToggledIcon="@Icons.Material.Filled.StopCircle" ToggledColor="@Color.Warning" ToggledTitle="On" />
+        <a href="/configuration">
+            <MudIconButton Icon="@Icons.Material.Filled.Settings" aria-label="configuration"></MudIconButton>
+        </a>
     </MudAppBar>
     <MudMainContent>
         @Body
     </MudMainContent>
 </MudLayout>
+@code {
+    private Action<string> OnTokenChange = null!;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        isTokenNull = await _container.GetToken() == null;
+        OnTokenChange = t =>
+        {
+            isTokenNull = t == null;
+            InvokeAsync(StateHasChanged);
+        };
+        _container.OnTokenChange += OnTokenChange;
+    }
+    bool isTokenNull;
+    bool _isRecord;
+    private async Task RecordToggled()
+    {
+        if (_isRecord)
+            _audioService.Start();
+        else
+            _audioService.Stop();
+    }
+    public void Dispose()
+    {
+        _container.OnTokenChange -= OnTokenChange;
+    }
+}
