@@ -1,0 +1,12 @@
+wrapper {
+    display: flex;
+    flex-direction: column;
+    overflow-x: scroll;
+    height:calc(100vh - 48px);
+}
+
+message {
+    padding: 1px;
+    margin: 1px 0;
+    background-color: rgba(0,0,0,0.2);
+}

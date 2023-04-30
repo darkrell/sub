@@ -1,5 +1,51 @@
 ﻿@page "/"
+@inject IParseService _parseService
+@inject ISnackbar _snackbar
+@inject IJSRuntime _js
+@implements IDisposable
+<wrapper @ref="_wrapper">
+    @foreach (var item in _msgPackages)
+    {
+        <message @key="@item.id">
+            @item.package.Message
+        </message>
+    }
+</wrapper>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
+@code {
+    ElementReference _wrapper;
+    List<(MsgPackage package, Guid id)> _msgPackages = new();
+    MsgPackage _updatablePackage;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _parseService.OnError += OnError;
+        _parseService.OnMessage += OnMessage;
+    }
+    protected override async Task OnAfterRenderAsync(bool first)
+    {
+        await _js.InvokeVoidAsync("scrollToBottom", _wrapper);
+    }
+    private void OnMessage(MsgPackage package)
+    {
+        if (_updatablePackage == null)
+        {
+            _updatablePackage = package;
+            _msgPackages.Add((package, Guid.NewGuid()));
+        }
+        else
+            _updatablePackage.Message = package.Message;
+        if (package.IsFinal)
+            _updatablePackage = null;
+        _ = InvokeAsync(StateHasChanged);
+    }
+    private void OnError(string error)
+    {
+        _snackbar.Add("Parse service failed", Severity.Error, x => x.VisibleStateDuration = 1000);
+    }
+    public void Dispose()
+    {
+        _parseService.OnError -= OnError;
+        _parseService.OnMessage -= OnMessage;
+    }
+}
