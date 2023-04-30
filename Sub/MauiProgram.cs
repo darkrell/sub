@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using MudBlazor.Services;
+using Sub.ApplicationLayer;
 using Sub.Data;
 
 namespace Sub;
@@ -16,10 +17,15 @@ public static class MauiProgram
             });
         builder.Services.AddMudServices();
         builder.Services.AddMauiBlazorWebView();
+        builder.Services.AddScoped<AudioService>();
+
+        builder.Services.AddScoped<ITokenContainer, TokenContainer>();
+        builder.Services.AddScoped<ITokenValidator, DeepGramTokenValidator>();
+        builder.Services.AddScoped<IParseService, DeepGramParseService>();
 
 #if DEBUG
-		builder.Services.AddBlazorWebViewDeveloperTools();
-		builder.Logging.AddDebug();
+        builder.Services.AddBlazorWebViewDeveloperTools();
+        builder.Logging.AddDebug();
 #endif
 
         builder.Services.AddSingleton<WeatherForecastService>();
