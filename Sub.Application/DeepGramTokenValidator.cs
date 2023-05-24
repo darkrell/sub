@@ -15,12 +15,8 @@ public class DeepGramTokenValidator : ITokenValidator
         using var client = deepgramClient.CreateLiveTranscriptionClient();
         await client.StartConnectionAsync(new());
 
-        if (client.State() == WebSocketState.Open)
-        {
-            await client.StopConnectionAsync();
-            return true;
-        }
+        var result = client.State() == WebSocketState.Open;
         await client.StopConnectionAsync();
-        return false;
+        return result;
     }
 }
