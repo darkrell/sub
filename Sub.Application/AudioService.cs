@@ -45,10 +45,3 @@ public class AudioService : IDisposable
         _waveWriter.Dispose();
     }
 }
-public class DeepGramService
-{
-    public async Task Push()
-    {
-
-    }
-}
