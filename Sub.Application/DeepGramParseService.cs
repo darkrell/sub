@@ -26,7 +26,6 @@ public class DeepGramParseService : IDisposable, IParseService
         try
         {
             if (_client != null && _client.State() == WebSocketState.Open) return; 
-            Debug.WriteLine("Reconnection");
 
             await (_client?.StopConnectionAsync() ?? Task.CompletedTask);
             _client?.Dispose();
