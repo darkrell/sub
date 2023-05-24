@@ -25,6 +25,7 @@ public class DeepGramParseService : IDisposable, IParseService
         await _semaphoreSlim.WaitAsync();
         try
         {
+            if (_client != null && _client.State() == WebSocketState.Open) return; 
             Debug.WriteLine("Reconnection");
 
             await (_client?.StopConnectionAsync() ?? Task.CompletedTask);
